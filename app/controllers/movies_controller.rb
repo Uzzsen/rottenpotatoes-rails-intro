@@ -11,7 +11,43 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    #@movies = Movie.all
+        @all_ratings = []
+	Movie.find_each do |m|
+	@all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
+		end
+		
+#	if params[:ratings].nil? || params[:order_by].nil?
+#	  params[:ratings] ||= Hash[session[:selected].collect {|v| [v, 1]}]
+#	  params[:order_by] ||= session[:order]
+# 	  flash.keep
+#	  redirect_to movies_path params
+#	end
+	
+	session[:selected] = params[:ratings].keys unless params[:ratings].nil?
+	session[:selected] ||= @all_ratings	
+	session[:order] = params[:order_by] unless params[:order_by].nil?
+
+
+#	session[:order] = nil
+# 	params[:order_by] == nil ? session[:order] ='id' : session[:order] = params[:order_by]
+   #debugger
+  case session[:order] #!= nil 
+    	#by = session[:order]
+	when 'title'	
+	  @title_order = 'hilite'
+	  @movies = Movie.where(rating: session[:selected]).order(session[:order])
+	when 'release_date'
+	  @release_date_order = 'hilite'
+    @movies = Movie.where(rating: session[:selected]).order(session[:order])	   
+  else 
+	  @title_order = nil	 
+	  @release_date_order = nil
+	  @movies = Movie.where(rating: session[:selected]).order("id")
+  end
+	@selected= []	
+	@selected = session[:selected]
+
   end
 
   def new
