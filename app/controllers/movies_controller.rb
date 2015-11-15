@@ -12,7 +12,7 @@ class MoviesController < ApplicationController
 
   def index
     #@movies = Movie.all
-        @all_ratings = []
+  @all_ratings = []
 	Movie.find_each do |m|
 	@all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
 		end
@@ -24,7 +24,7 @@ class MoviesController < ApplicationController
 #	  redirect_to movies_path params
 #	end
 	
-	session[:selected] = params[:ratings].keys unless params[:ratings].nil?
+  session[:selected] = params[:ratings].keys unless params[:ratings].nil?
 	session[:selected] ||= @all_ratings	
 	session[:order] = params[:order_by] unless params[:order_by].nil?
 
@@ -47,8 +47,9 @@ class MoviesController < ApplicationController
   end
 	@selected= []	
 	@selected = session[:selected]
-
-  end
+#	if session[:selected] != params[:ratings].keys || session[:order] != params[:order_by]
+#	   session[:selected] =
+ end
 
   def new
     # default: render 'new' template
