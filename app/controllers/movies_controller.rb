@@ -16,13 +16,6 @@ class MoviesController < ApplicationController
 	Movie.find_each do |m|
 	@all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
 		end
-		
-#	if params[:ratings].nil? || params[:order_by].nil?
-#	  params[:ratings] ||= Hash[session[:selected].collect {|v| [v, 1]}]
-#	  params[:order_by] ||= session[:order]
-# 	  flash.keep
-#	  redirect_to movies_path params
-#	end
 	
   session[:selected] = params[:ratings].keys unless params[:ratings].nil?
 	session[:selected] ||= @all_ratings	
@@ -49,7 +42,7 @@ class MoviesController < ApplicationController
 	@selected = session[:selected]
 #	if session[:selected] != params[:ratings].keys || session[:order] != params[:order_by]
 #	   session[:selected] =
- end
+  end
 
   def new
     # default: render 'new' template
