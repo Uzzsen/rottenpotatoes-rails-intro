@@ -42,8 +42,7 @@ class MoviesController < ApplicationController
   if session[:selected] != params[:selected] || session[:order] != params[:order]
      session[:selected] = @selected
      session[:order] = sorting
-     redirect_to :order => ordering, :selected => @selected 
-     return
+     redirect_to :order => ordering, :selected => @selected and return
   end
      @movies = Movie.where(rating: @selected.keys).order(ordering)	   
   end
