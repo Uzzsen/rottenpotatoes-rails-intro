@@ -17,31 +17,35 @@ class MoviesController < ApplicationController
 	@all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
 		end
 	
-  session[:selected] = params[:ratings].keys unless params[:ratings].nil?
-	session[:selected] ||= @all_ratings	
-	session[:order] = params[:order_by] unless params[:order_by].nil?
-
-
-#	session[:order] = nil
-# 	params[:order_by] == nil ? session[:order] ='id' : session[:order] = params[:order_by]
-   #debugger
-  case session[:order] #!= nil 
+  #session[:selected] = params[:ratings].keys unless params[:ratings].nil?
+	#session[:selected] ||= @all_ratings	
+	sorting = params[:order] || session[:order]
+	
+  case sorting #!= nil 
     	#by = session[:order]
 	when 'title'	
-	  @title_order = 'hilite'
-	  @movies = Movie.where(rating: session[:selected]).order(session[:order])
+	  ordering, @title_order = {:order => :title}, 'hilite'
 	when 'release_date'
-	  @release_date_order = 'hilite'
-    @movies = Movie.where(rating: session[:selected]).order(session[:order])	   
+	  ordering, @release_date_order = {:order => :release_date}, 'hilite'
+#    @movies = Movie.where(rating: session[:selected]).order(session[:order])	   
   else 
 	  @title_order = nil	 
 	  @release_date_order = nil
-	  @movies = Movie.where(rating: session[:selected]).order("id")
+#	  @movies = Movie.where(rating: session[:selected]).order("id")
   end
-	@selected= []	
-	@selected = session[:selected]
-#	if session[:selected] != params[:ratings].keys || session[:order] != params[:order_by]
-#	   session[:selected] =
+	
+	@selected = params[:selected] || session[:selected] || {}
+	if @selected == {}
+	   @selected = Hash[@all_ratings.map {|rating| [rating, rating]}] 
+	end	
+
+  if session[:selected] != params[:selected] || session[:order] != params[:order]
+     session[:selected] = @selected
+     session[:order] = sorting
+     redirect_to :order => ordering, :selected => @selected 
+     return
+  end
+     @movies = Movie.where(rating: @selected.keys).order(ordering)	   
   end
 
   def new
