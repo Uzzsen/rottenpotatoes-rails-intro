@@ -42,7 +42,7 @@ class MoviesController < ApplicationController
   if session[:selected] != params[:selected] || session[:order] != params[:order]
      session[:selected] = @selected
      session[:order] = sorting
-     redirect_to movies_path(:order => ordering, :selected => @selected
+     redirect_to movies_path(:order => ordering, :selected => @selected)
      return
   end
      @movies = Movie.find_all_by_rating(@selected.keys,ordering)	   
