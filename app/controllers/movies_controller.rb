@@ -28,9 +28,9 @@ class MoviesController < ApplicationController
 	when 'release_date'
 	  ordering, @release_date_order = {:order => :release_date}, 'hilite'
 #    @movies = Movie.where(rating: session[:selected]).order(session[:order])	   
-  else 
-	  @title_order = nil	 
-	  @release_date_order = nil
+#  else 
+#	  @title_order = nil	 
+#	  @release_date_order = nil
 #	  @movies = Movie.where(rating: session[:selected]).order("id")
   end
 	
