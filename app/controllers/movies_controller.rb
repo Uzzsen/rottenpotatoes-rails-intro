@@ -32,15 +32,16 @@ class MoviesController < ApplicationController
 	  @movies = Movie.where(rating: session[:selected].keys).order(session[:order])
 	when 'release_date'
 	  @release_date_order = 'hilite'
-    	  @movies = Movie.where(rating: session[:selected].keys).order(session[:order])	   
-    	else 
+    @movies = Movie.where(rating: session[:selected].keys).order(session[:order])	   
+  else 
 	  @title_order = nil	 
 	  @release_date_order = nil
 	  @movies = Movie.where(rating: session[:selected].keys).order("id")
 #debugger
     end
-	@selected= []	
+	@selected = []	
 	@selected = session[:selected]
+	@ordered = session[:order]
 
   end
 
