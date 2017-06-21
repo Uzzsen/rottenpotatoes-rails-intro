@@ -12,36 +12,30 @@ class MoviesController < ApplicationController
 
   def index
     #@movies = Movie.all
-  @all_ratings = []
-	Movie.find_each do |m|
-	@all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
+    @all_ratings = []
+	  Movie.find_each do |m|
+	  @all_ratings << m.rating if @all_ratings.none? {|r| r == m.rating}
 		end
 #debugger	
-	session[:selected] = params[:ratings] unless params[:ratings].nil?
-	session[:selected] ||= Hash[@all_ratings.map {|r| [r, 1]}]
-	session[:order] = params[:order_by] unless params[:order_by].nil?
+	  @selected = params[:ratings] || session[:selected] || Hash[@all_ratings.map {|r| [r, 1]}]
+  #	session[:selected] ||= Hash[@all_ratings.map {|r| [r, 1]}]
+	  @ordered = params[:order_by] || session[:order]
+	  session[:selected], session[:order] = @selected, @ordered
+	
+	  if params[:ratings] != session[:selected] || params[:order_by] != session[:order]
+	    flash.keep
+	    redirect_to movies_path :ratings => @selected,  :order_by => @ordered
+	  end  
 
-
-#	session[:order] = nil
-# 	params[:order_by] == nil ? session[:order] ='id' : session[:order] = params[:order_by]
 #   debugger
-    case session[:order] #!= nil 
-    	#by = session[:order]
-	when 'title'	
-	  @title_order = 'hilite'
-	  @movies = Movie.where(rating: session[:selected].keys).order(session[:order])
-	when 'release_date'
-	  @release_date_order = 'hilite'
-    @movies = Movie.where(rating: session[:selected].keys).order(session[:order])	   
-  else 
-	  @title_order = nil	 
-	  @release_date_order = nil
-	  @movies = Movie.where(rating: session[:selected].keys).order("id")
-#debugger
-    end
-	@selected = []	
-	@selected = session[:selected]
-	@ordered = session[:order]
+    if session[:order] 
+      @movies = Movie.where(rating: session[:selected].keys).order(session[:order])
+      session[:order] == 'title' ?     @title_order = 'hilite' :   @release_date_order = 'hilite'
+    else
+      @movies = Movie.where(rating: session[:selected].keys)
+      @title_order = nil	 
+	    @release_date_order = nil
+	  end   
 
   end
 
